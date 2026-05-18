@@ -82,7 +82,7 @@ class MainScreen(BaseScreen):
             await self.app.bar_switcher.handle_keypress(event.key)
             return True
 
-        if isinstance(self.app.focused, TodoDetailsEditor):
+        if isinstance(self.app.focused, TodoDetailsEditor) and self.app.focused.is_editing:
             return False
 
         key = self.resolve_key(event)

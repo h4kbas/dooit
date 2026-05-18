@@ -129,6 +129,7 @@ class TodoDetailsEditor(TextArea):
         self.can_focus = False
         self.read_only = True
         self.border_title = "Details" if self.text.strip() else ""
+        self.remove_class("-panel-focus")
         self.sync_visibility()
         self.app.post_message(ModeChanged("NORMAL"))
 
@@ -138,6 +139,7 @@ class TodoDetailsEditor(TextArea):
         if panel is not None:
             tree = panel.query(TodosTree).first()
             if tree is not None:
+                self.blur()
                 tree.focus()
                 tree.force_refresh()
 

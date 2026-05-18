@@ -51,10 +51,11 @@ class DooitAPI:
     async def handle_key(self, key: str) -> None:
         from dooit.ui.widgets.todo_details_editor import TodoDetailsEditor
 
-        if isinstance(self.app.focused, TodoDetailsEditor):
-            return
-
         keymatch = self.keys.register_key(key)
+
+        if isinstance(self.app.focused, TodoDetailsEditor) and self.app.focused.is_editing:
+            if keymatch.match_type == KeyMatchType.NoMatchFound:
+                return
 
         if keymatch.match_type == KeyMatchType.NoMatchFound:
             await self.focused.handle_keypress(key)
@@ -226,10 +227,25 @@ class DooitAPI:
         """Start sorting the siblings of the highlighted item"""
         self.focused.start_sort()
 
+    def _active_todos_tree(self) -> TodosTree | None:
+        from dooit.ui.widgets.todo_details_editor import TodoDetailsEditor
+
+        focused = self.app.focused
+        if isinstance(focused, TodosTree):
+            return focused
+
+        if isinstance(focused, TodoDetailsEditor):
+            panel = focused.parent
+            if panel is not None:
+                return panel.query(TodosTree).first()
+
+        return None
+
     def toggle_complete(self):
         """Toggle the completion of the todo"""
-        if isinstance(self.focused, TodosTree):
-            self.focused.toggle_complete()
+        tree = self._active_todos_tree()
+        if tree is not None and tree.highlighted is not None:
+            tree.toggle_complete()
 
     def increase_urgency(self):
         """Increase the urgency of the todo"""
