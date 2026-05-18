@@ -1,6 +1,7 @@
 from textual.pilot import Pilot
 from textual.widgets import ContentSwitcher
 from dooit.ui.tui import Dooit
+from dooit.ui.widgets.todos_panel import TodosPanel
 from dooit.ui.widgets.trees.todos_tree import TodosTree
 
 TEMP_DB_PATH = ":memory:"
@@ -24,9 +25,13 @@ async def create_and_move_to_todo(pilot: Pilot) -> TodosTree:
     app.api.switch_focus()
     await pilot.pause()
 
-    tree = app.screen.query_one(
+    content = app.screen.query_one(
         "#todo_switcher", expect_type=ContentSwitcher
     ).visible_content
-    assert isinstance(tree, TodosTree)
+    if isinstance(content, TodosPanel):
+        tree = content.query_one(TodosTree)
+    else:
+        assert isinstance(content, TodosTree)
+        tree = content
 
     return tree

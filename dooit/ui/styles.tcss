@@ -75,7 +75,6 @@ TodosPanel > #todo_details_editor {
     padding: 1;
     overflow-y: auto;
 
-    &:focus,
     &.-panel-focus {
         border: $border_type $primary;
         border-title-color: $background1;

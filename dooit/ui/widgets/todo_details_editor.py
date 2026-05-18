@@ -86,13 +86,11 @@ class TodoDetailsEditor(TextArea):
             self.remove_class("-panel-focus")
 
     @on(events.Focus)
-    def on_focus(self, event: events.Focus) -> None:
-        event.stop()
+    def on_focus(self, _event: events.Focus) -> None:
         self._sync_panel_focus_style()
 
     @on(events.Blur)
-    def on_blur(self, event: events.Blur) -> None:
-        event.stop()
+    def on_blur(self, _event: events.Blur) -> None:
         self._sync_panel_focus_style()
 
     def show_preview(self, details: str) -> None:
@@ -136,12 +134,16 @@ class TodoDetailsEditor(TextArea):
         from .trees.todos_tree import TodosTree
 
         panel = self.parent
-        if panel is not None:
-            tree = panel.query(TodosTree).first()
+        tree = panel.query(TodosTree).first() if panel is not None else None
+
+        def refocus_todos_tree() -> None:
+            self.remove_class("-panel-focus")
             if tree is not None:
-                self.blur()
                 tree.focus()
                 tree.force_refresh()
+
+        self.blur()
+        self.app.call_after_refresh(refocus_todos_tree)
 
     def _set_insert_mode(self, insert: bool) -> None:
         self._insert_mode = insert

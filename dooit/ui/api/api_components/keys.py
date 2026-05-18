@@ -102,9 +102,24 @@ class KeyManager(ApiComponent):
     def clear_input(self):
         self._inputs.clear()
 
+    def _is_prefix_match(self, key: str, prefix: str) -> bool:
+        if not key.startswith(prefix):
+            return False
+
+        for mod in ("ctrl+", "alt+", "shift+"):
+            if key.startswith(mod):
+                return prefix.startswith(mod) or prefix.startswith("<")
+
+        return True
+
     def _find_matched_functions(self) -> List[DooitFunction]:
+        prefix = self.input
         keybinds = self.keybinds[self.get_mode()].items()
-        return [func for key, func in keybinds if key.startswith(self.input) and func]
+        return [
+            func
+            for key, func in keybinds
+            if func and self._is_prefix_match(key, prefix)
+        ]
 
     def search_for_key(self) -> KeyMatch:
         matched = self._find_matched_functions()
