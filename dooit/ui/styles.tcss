@@ -61,7 +61,7 @@ TodosPanel > TodosTree {
     min-height: 3;
 }
 
-TodosPanel > #todo_details_preview {
+TodosPanel > #todo_details_editor {
     height: auto;
     max-height: 12;
     min-height: 0;
@@ -69,41 +69,11 @@ TodosPanel > #todo_details_preview {
     border: tall $background3;
     border-title-color: $foreground1;
     border-title-background: $background3;
-    background: $background2;
+    background: $background1;
+    background-tint: white 0%;
     color: $foreground3;
     padding: 0 1;
     overflow-y: auto;
-}
-
-TodosPanel > #todo_details_preview.-visible {
-    display: block;
-}
-
-TodoDetailsScreen {
-    align: center middle;
-}
-
-#details-dialog {
-    width: 90%;
-    max-width: 100;
-    height: 80%;
-    max-height: 28;
-    border: heavy $primary;
-    background: $background2;
-    padding: 0 1;
-}
-
-#details-hint {
-    height: 1;
-    color: $foreground1;
-    text-style: italic;
-}
-
-#details-ta {
-    height: 1fr;
-    border: none;
-    background: $background1;
-    color: $foreground3;
 
     & .text-area--cursor-line {
         background: $background3;
@@ -116,6 +86,10 @@ TodoDetailsScreen {
     & .text-area--gutter {
         color: $foreground1 40%;
     }
+}
+
+TodosPanel > #todo_details_editor.-visible {
+    display: block;
 }
 
 Header {

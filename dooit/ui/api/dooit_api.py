@@ -141,28 +141,29 @@ class DooitAPI:
         """Start editing the description of the focused item"""
         return self.edit("description")
 
+    def open_description_in_editor(self) -> None:
+        """Open the in-progress description in $EDITOR (while editing with i)"""
+        focused = self.app.focused
+        if isinstance(focused, ModelTree):
+            focused.open_description_in_external_editor()
+
     def edit_todo_details(self) -> None:
-        from dooit.ui.screens.todo_details_screen import TodoDetailsScreen
+        from dooit.ui.widgets.todo_details_editor import TodoDetailsEditor
         from dooit.ui.widgets.todos_panel import TodosPanel
 
         focused = self.focused
+        if isinstance(focused, TodoDetailsEditor):
+            return
+
         if not isinstance(focused, TodosTree):
             return
 
         if focused.highlighted is None:
             return
 
-        todo_id = focused.current_model.uuid
         panel = focused.parent if isinstance(focused.parent, TodosPanel) else None
-
-        def on_close(_: object) -> None:
-            focused.force_refresh()
-            if panel is not None:
-                panel.refresh_details_preview()
-            self.app.post_message(ModeChanged("NORMAL"))
-
-        self.app.push_screen(TodoDetailsScreen(todo_id), on_close)
-        self.app.post_message(ModeChanged("INSERT"))
+        if panel is not None:
+            panel.start_editing_details()
 
     def edit_due(self):
         """Start editing the due date of the todo"""

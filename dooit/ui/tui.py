@@ -9,7 +9,6 @@ from dooit.ui.widgets import BarSwitcher
 from dooit.ui.widgets.bars import StatusBar
 from dooit.ui.widgets.trees import WorkspacesTree
 from dooit.ui.screens import MainScreen, HelpScreen
-from dooit.ui.screens.todo_details_screen import TodoDetailsScreen
 from dooit.ui.widgets.trees.model_tree import ModelTree
 from dooit.utils import CssManager
 from .api import DooitAPI
@@ -29,7 +28,6 @@ class Dooit(App):
     SCREENS = {
         "help": HelpScreen,
         "main": MainScreen,
-        "todo_details": TodoDetailsScreen,
     }
 
     BINDINGS = [

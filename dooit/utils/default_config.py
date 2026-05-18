@@ -135,6 +135,11 @@ def key_setup(api: DooitAPI, _):
     api.keys.set("j", api.move_down)
     api.keys.set("k", api.move_up)
     api.keys.set("i", api.edit_description)
+    api.keys.set(
+        "ctrl+e",
+        api.open_description_in_editor,
+        description="Open description in $EDITOR (while editing)",
+    )
     api.keys.set("o", api.edit_todo_details)
     api.keys.set("d", api.edit_due)
     api.keys.set("r", api.edit_recurrence)

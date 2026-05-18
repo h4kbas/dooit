@@ -200,9 +200,22 @@ class ModelTree(BaseTree, Generic[ModelType, RenderDictType]):
         """
         self.set_filter("")
 
+    def open_description_in_external_editor(self) -> None:
+        if not self.is_editing or self.current.editing != "description":
+            return
+
+        from dooit.utils.editor import edit_in_external_editor
+
+        component = self.current._get_component("description")
+        with self.app.suspend():
+            component._value = edit_in_external_editor(component.value)
+        component.move_cursor_to_end()
+
     async def handle_keypress(self, key: str) -> bool:
         if self.is_editing:
-            if key in ["escape", "enter"]:
+            if key == "ctrl+e" and self.current.editing == "description":
+                self.open_description_in_external_editor()
+            elif key in ["escape", "enter"]:
                 self.stop_edit()
             else:
                 self.current.handle_keypress(key)
