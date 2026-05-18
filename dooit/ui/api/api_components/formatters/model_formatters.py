@@ -6,6 +6,8 @@ class TodoFormatter(ModelFormatterBase):
     def setup_formatters(self):
         self.description = self.get_formatter_store()
         self.due = self.get_formatter_store()
+        self.created_at = self.get_formatter_store()
+        self.completed_at = self.get_formatter_store()
         self.effort = self.get_formatter_store()
         self.recurrence = self.get_formatter_store()
         self.urgency = self.get_formatter_store()

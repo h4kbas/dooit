@@ -112,11 +112,22 @@ def test_toggle_complete(todo1):
     assert todo1.pending
     assert todo1.is_pending
     assert not todo1.is_completed
+    assert todo1.completed_at is None
 
     todo1.toggle_complete()
     assert not todo1.pending
     assert not todo1.is_pending
     assert todo1.is_completed
+    assert todo1.completed_at is not None
+
+    todo1.toggle_complete()
+    assert todo1.pending
+    assert todo1.completed_at is None
+
+
+def test_created_at_on_save(create_todo):
+    t = create_todo()
+    assert t.created_at is not None
 
 
 def test_toggle_complete_parent(create_workspace, create_todo):

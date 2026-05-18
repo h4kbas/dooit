@@ -21,6 +21,8 @@ class Todo(DooitModel):
     recurrence: Mapped[Optional[timedelta]] = mapped_column(default=None)
     urgency: Mapped[int] = mapped_column(default=1)
     pending: Mapped[bool] = mapped_column(default=True)
+    created_at: Mapped[Optional[datetime]] = mapped_column(default=None)
+    completed_at: Mapped[Optional[datetime]] = mapped_column(default=None)
 
     # --------------------------------------------------------------
     # ------------------- Relationships ----------------------------
@@ -153,8 +155,18 @@ class Todo(DooitModel):
         self.save()
 
     def toggle_complete(self) -> None:
-        self.pending = not self.pending
+        if self.pending:
+            self.pending = False
+            self.completed_at = datetime.now()
+        else:
+            self.pending = True
+            self.completed_at = None
         self.save()
+
+    def save(self) -> None:
+        if self.created_at is None:
+            self.created_at = datetime.now()
+        manager.save(self)
 
     def is_due_today(self) -> bool:
         if not self.due:
@@ -185,7 +197,15 @@ class Todo(DooitModel):
     @staticmethod
     def clone_from_id(id: int, order_index: int) -> "Todo":
         todo = Todo.from_id(str(id))
-        fields = ["description", "due", "effort", "recurrence", "urgency", "pending"]
+        fields = [
+            "description",
+            "due",
+            "effort",
+            "recurrence",
+            "urgency",
+            "pending",
+            "completed_at",
+        ]
         attrs = {field: getattr(todo, field) for field in fields}
         attrs.update(
             {
@@ -219,6 +239,7 @@ class Todo(DooitModel):
             "recurrence",
             "urgency",
             "pending",
+            "completed_at",
             "order_index",
         ]
         attrs = {field: getattr(source_todo, field) for field in fields}

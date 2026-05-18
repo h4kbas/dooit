@@ -145,6 +145,14 @@ class DooitAPI:
         """Start editing the due date of the todo"""
         return self.edit("due")
 
+    def edit_created_at(self):
+        """Start editing the created date of the todo"""
+        return self.edit("created_at")
+
+    def edit_completed_at(self):
+        """Start editing the completed date of the todo"""
+        return self.edit("completed_at")
+
     def edit_recurrence(self):
         """Start editing the recurrence of the todo"""
         return self.edit("recurrence")

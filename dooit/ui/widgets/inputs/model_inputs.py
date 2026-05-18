@@ -42,6 +42,18 @@ class Due(SimpleInput[Todo, datetime]):
         return due
 
 
+class CreatedAt(Due):
+    @property
+    def _property(self) -> str:
+        return "created_at"
+
+
+class CompletedAt(Due):
+    @property
+    def _property(self) -> str:
+        return "completed_at"
+
+
 class Urgency(SimpleInput[Todo, int]):
     @property
     def value(self) -> str:
