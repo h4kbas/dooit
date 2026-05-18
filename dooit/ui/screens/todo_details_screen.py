@@ -8,33 +8,6 @@ from dooit.api import Todo
 
 
 class TodoDetailsScreen(ModalScreen[bool]):
-    DEFAULT_CSS = """
-    TodoDetailsScreen {
-        align: center middle;
-    }
-
-    #details-dialog {
-        width: 90%;
-        max-width: 100;
-        height: 80%;
-        max-height: 28;
-        border: heavy $primary;
-        background: $background2;
-        padding: 0 1;
-    }
-
-    #details-hint {
-        height: 1;
-        color: $foreground1;
-        text-style: italic;
-    }
-
-    #details-ta {
-        height: 1fr;
-        border: none;
-    }
-    """
-
     BINDINGS = [
         Binding("escape", "save_and_close", "Save", show=True, priority=True),
     ]

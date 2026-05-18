@@ -9,34 +9,6 @@ from .trees.todos_tree import TodosTree
 
 
 class TodosPanel(Container):
-    DEFAULT_CSS = """
-    TodosPanel {
-        layout: vertical;
-        height: 1fr;
-    }
-
-    TodosPanel > TodosTree {
-        height: 1fr;
-        min-height: 3;
-    }
-
-    TodosPanel > #todo_details_preview {
-        height: auto;
-        max-height: 12;
-        min-height: 0;
-        display: none;
-        border: tall $background3;
-        border-title-color: $foreground1;
-        border-title-background: $background3;
-        padding: 0 1;
-        overflow-y: auto;
-    }
-
-    TodosPanel > #todo_details_preview.-visible {
-        display: block;
-    }
-    """
-
     def __init__(self, workspace: Workspace) -> None:
         super().__init__(id=f"TodosPanel_{workspace.uuid}")
         self._workspace = workspace
