@@ -5,11 +5,19 @@ from textual.screen import ModalScreen
 from textual.widgets import Static, TextArea
 
 from dooit.api import Todo
+from dooit.utils.editor import edit_in_external_editor
 
 
 class TodoDetailsScreen(ModalScreen[bool]):
     BINDINGS = [
         Binding("escape", "save_and_close", "Save", show=True, priority=True),
+        Binding(
+            "ctrl+e",
+            "open_in_editor",
+            "Open in $EDITOR",
+            show=True,
+            priority=True,
+        ),
     ]
 
     def __init__(self, todo_id: str) -> None:
@@ -19,7 +27,7 @@ class TodoDetailsScreen(ModalScreen[bool]):
     def compose(self) -> ComposeResult:
         with Vertical(id="details-dialog"):
             yield Static(
-                "escape: save and close  |  enter: new line",
+                "escape: save  |  ctrl+e: $EDITOR  |  enter: new line",
                 id="details-hint",
             )
             yield TextArea(id="details-ta")
@@ -29,6 +37,12 @@ class TodoDetailsScreen(ModalScreen[bool]):
         ta = self.query_one("#details-ta", TextArea)
         ta.text = todo.details or ""
         ta.border_title = "details"
+        ta.focus()
+
+    def action_open_in_editor(self) -> None:
+        ta = self.query_one("#details-ta", TextArea)
+        with self.app.suspend():
+            ta.text = edit_in_external_editor(ta.text)
         ta.focus()
 
     def action_save_and_close(self) -> None:
