@@ -122,7 +122,7 @@ class MainScreen(BaseScreen):
             await switcher.add_content(panel, set_current=True)
         else:
             switcher.current = panel.id
-            panel.refresh_details_preview()
+            panel.call_after_refresh(panel.refresh_details_preview)
 
     # SQLAlchemy event listeners
 
