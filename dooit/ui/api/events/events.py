@@ -175,6 +175,13 @@ class TodoDescriptionChanged(TodoEvent):
         self.new = new
 
 
+class TodoDetailsChanged(TodoEvent):
+    def __init__(self, old: str, new: str, todo: Todo) -> None:
+        super().__init__(todo)
+        self.old = old
+        self.new = new
+
+
 class TodoDueChanged(TodoEvent):
     """
     Emitted when user changes the due of a todo

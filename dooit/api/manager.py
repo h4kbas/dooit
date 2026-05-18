@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from ._vars import DATABASE_FILE
 
 
-def _ensure_todo_timestamp_columns(engine) -> None:
+def _ensure_todo_columns(engine) -> None:
     insp = inspect(engine)
     if not insp.has_table("todo"):
         return
@@ -15,6 +15,8 @@ def _ensure_todo_timestamp_columns(engine) -> None:
     cols = {c["name"] for c in insp.get_columns("todo")}
 
     with engine.begin() as conn:
+        if "details" not in cols:
+            conn.execute(text("ALTER TABLE todo ADD COLUMN details TEXT DEFAULT ''"))
         if "created_at" not in cols:
             conn.execute(text("ALTER TABLE todo ADD COLUMN created_at DATETIME"))
             conn.execute(
@@ -49,7 +51,7 @@ class Manager:
         self.session = Session(self.engine)
 
         BaseModel.metadata.create_all(bind=self.engine)
-        _ensure_todo_timestamp_columns(self.engine)
+        _ensure_todo_columns(self.engine)
         self._db_last_modified = self._get_db_last_modified()
 
     def _get_db_last_modified(self) -> Optional[float]:

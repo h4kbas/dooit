@@ -112,6 +112,13 @@ def todo_urgency_formatter(urgency, _, api: DooitAPI):
     )
 
 
+def todo_description_details_icon(description: str, model: Todo, api: DooitAPI):
+    text = Text(str(description or ""))
+    if (model.details or "").strip():
+        text = Text("\U000f089f ", style=Style(color=api.vars.theme.secondary)) + text
+    return text
+
+
 def todo_recurrence_formatter(recurrence: Optional[timedelta], _):
     if recurrence is None:
         return ""
@@ -128,6 +135,7 @@ def key_setup(api: DooitAPI, _):
     api.keys.set("j", api.move_down)
     api.keys.set("k", api.move_up)
     api.keys.set("i", api.edit_description)
+    api.keys.set("o", api.edit_todo_details)
     api.keys.set("d", api.edit_due)
     api.keys.set("r", api.edit_recurrence)
     api.keys.set("e", api.edit_effort)
@@ -167,6 +175,7 @@ def layout_setup(api: DooitAPI, _):
 @subscribe(Startup)
 def formatter_setup(api: DooitAPI, _):
     api.formatter.todos.status.add(todo_status_formatter)
+    api.formatter.todos.description.add(todo_description_details_icon)
     api.formatter.todos.due.add(todo_due_formatter)
     api.formatter.todos.urgency.add(todo_urgency_formatter)
     api.formatter.todos.recurrence.add(todo_recurrence_formatter)

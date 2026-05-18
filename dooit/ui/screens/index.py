@@ -15,6 +15,7 @@ from dooit.ui.api.events import (
     TodoCompletedAtChanged,
     TodoCreatedAtChanged,
     TodoDescriptionChanged,
+    TodoDetailsChanged,
     TodoDueChanged,
     TodoEffortChanged,
     TodoRecurrenceChanged,
@@ -28,6 +29,7 @@ from dooit.ui.api.events import (
 )
 from dooit.ui.widgets.trees import WorkspacesTree, TodosTree
 from dooit.ui.widgets import BarSwitcher, Dashboard
+from dooit.ui.widgets.todos_panel import TodosPanel
 from .base import BaseScreen
 
 
@@ -114,12 +116,13 @@ class MainScreen(BaseScreen):
     @on(WorkspaceSelected)
     async def workspace_selected(self, event: WorkspaceSelected):
         switcher = self.query_one("#todo_switcher", expect_type=ContentSwitcher)
-        tree = TodosTree(event.workspace)
+        panel = TodosPanel(event.workspace)
 
-        if not switcher.query(f"#{tree.id}"):
-            await switcher.add_content(tree, set_current=True)
+        if not switcher.query(f"#{panel.id}"):
+            await switcher.add_content(panel, set_current=True)
         else:
-            switcher.current = tree.id
+            switcher.current = panel.id
+            panel.refresh_details_preview()
 
     # SQLAlchemy event listeners
 
@@ -143,6 +146,7 @@ class MainScreen(BaseScreen):
         listeners = (
             (Workspace, "description", WorkspaceDescriptionChanged),
             (Todo, "description", TodoDescriptionChanged),
+            (Todo, "details", TodoDetailsChanged),
             (Todo, "due", TodoDueChanged),
             (Todo, "created_at", TodoCreatedAtChanged),
             (Todo, "completed_at", TodoCompletedAtChanged),

@@ -16,6 +16,7 @@ class Todo(DooitModel):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     order_index: Mapped[int] = mapped_column(default=-1)
     description: Mapped[str] = mapped_column(default="")
+    details: Mapped[str] = mapped_column(default="")
     due: Mapped[Optional[datetime]] = mapped_column(default=None)
     effort: Mapped[int] = mapped_column(default=0)
     recurrence: Mapped[Optional[timedelta]] = mapped_column(default=None)
@@ -199,6 +200,7 @@ class Todo(DooitModel):
         todo = Todo.from_id(str(id))
         fields = [
             "description",
+            "details",
             "due",
             "effort",
             "recurrence",
@@ -234,6 +236,7 @@ class Todo(DooitModel):
     def _clone_todo_recursively(source_todo: "Todo", parent_clone: "Todo") -> None:
         fields = [
             "description",
+            "details",
             "due",
             "effort",
             "recurrence",

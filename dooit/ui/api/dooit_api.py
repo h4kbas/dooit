@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from dooit.ui.api.events import BarNotification, NotificationType
 from dooit.ui.api.plug import PluginManager
-from .events import DooitEvent, SwitchTab, QuitApp
+from .events import DooitEvent, ModeChanged, SwitchTab, QuitApp
 from dooit.ui.widgets import ModelTree
 from dooit.ui.widgets.trees import TodosTree
 from dooit.utils import CssManager
@@ -140,6 +140,29 @@ class DooitAPI:
     def edit_description(self):
         """Start editing the description of the focused item"""
         return self.edit("description")
+
+    def edit_todo_details(self) -> None:
+        from dooit.ui.screens.todo_details_screen import TodoDetailsScreen
+        from dooit.ui.widgets.todos_panel import TodosPanel
+
+        focused = self.focused
+        if not isinstance(focused, TodosTree):
+            return
+
+        if focused.highlighted is None:
+            return
+
+        todo_id = focused.current_model.uuid
+        panel = focused.parent if isinstance(focused.parent, TodosPanel) else None
+
+        def on_close(_: object) -> None:
+            focused.force_refresh()
+            if panel is not None:
+                panel.refresh_details_preview()
+            self.app.post_message(ModeChanged("NORMAL"))
+
+        self.app.push_screen(TodoDetailsScreen(todo_id), on_close)
+        self.app.post_message(ModeChanged("INSERT"))
 
     def edit_due(self):
         """Start editing the due date of the todo"""

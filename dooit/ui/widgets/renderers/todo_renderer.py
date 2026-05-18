@@ -16,6 +16,12 @@ class TodoRender(BaseRenderer[Todo]):
     def model(self) -> Todo:
         return self._model
 
+    def matches_filter(self, filter: str) -> bool:
+        if filter in self.model.description:
+            return True
+
+        return filter in (self.model.details or "")
+
     def post_init(self):
         self.description = TodoDescription(self.model)
         self.due = Due(self.model)

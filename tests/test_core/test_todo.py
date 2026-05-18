@@ -130,6 +130,17 @@ def test_created_at_on_save(create_todo):
     assert t.created_at is not None
 
 
+def test_todo_details(create_todo):
+    t = create_todo()
+    assert t.details == ""
+
+    t.details = "line one\nline two"
+    t.save()
+
+    again = Todo.from_id(str(t.id))
+    assert again.details == "line one\nline two"
+
+
 def test_toggle_complete_parent(create_workspace, create_todo):
     w = create_workspace()
     t = w.add_todo()

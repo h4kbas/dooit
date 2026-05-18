@@ -5,6 +5,7 @@ from textual.widgets import ContentSwitcher
 from dooit.api import Workspace
 from dooit.api.theme import DooitThemeBase
 from dooit.api.todo import Todo
+from dooit.ui.widgets.todos_panel import TodosPanel
 from dooit.ui.widgets.trees import WorkspacesTree, TodosTree
 from ._base import ApiComponent
 
@@ -70,10 +71,17 @@ class VarManager(ApiComponent):
         todo_switcher = self.api.app.screen.query_one(
             "#todo_switcher", expect_type=ContentSwitcher
         )
-        if todo_switcher.visible_content and isinstance(
-            todo_switcher.visible_content, TodosTree
-        ):
-            return todo_switcher.visible_content
+        content = todo_switcher.visible_content
+        if content is None:
+            return None
+
+        if isinstance(content, TodosPanel):
+            return content.query_one(TodosTree)
+
+        if isinstance(content, TodosTree):
+            return content
+
+        return None
 
     @property
     def current_todo(self) -> Optional[Todo]:
