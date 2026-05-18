@@ -29,6 +29,7 @@ from dooit.ui.api.events import (
 )
 from dooit.ui.widgets.trees import WorkspacesTree, TodosTree
 from dooit.ui.widgets import BarSwitcher, Dashboard
+from dooit.ui.widgets.todo_details_editor import TodoDetailsEditor
 from dooit.ui.widgets.todos_panel import TodosPanel
 from .base import BaseScreen
 
@@ -80,6 +81,9 @@ class MainScreen(BaseScreen):
         if self.app.bar_switcher.is_focused:
             await self.app.bar_switcher.handle_keypress(event.key)
             return True
+
+        if isinstance(self.app.focused, TodoDetailsEditor):
+            return False
 
         key = self.resolve_key(event)
         await self.api.handle_key(key)

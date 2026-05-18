@@ -1,5 +1,6 @@
 from typing import Callable, Optional
 
+from textual import events, on
 from textual.binding import Binding
 from textual.widgets import TextArea
 
@@ -78,6 +79,22 @@ class TodoDetailsEditor(TextArea):
         else:
             self.remove_class("-visible")
 
+    def _sync_panel_focus_style(self) -> None:
+        if self.has_focus:
+            self.add_class("-panel-focus")
+        else:
+            self.remove_class("-panel-focus")
+
+    @on(events.Focus)
+    def on_focus(self, event: events.Focus) -> None:
+        event.stop()
+        self._sync_panel_focus_style()
+
+    @on(events.Blur)
+    def on_blur(self, event: events.Blur) -> None:
+        event.stop()
+        self._sync_panel_focus_style()
+
     def show_preview(self, details: str) -> None:
         if self._editing:
             return
@@ -93,6 +110,7 @@ class TodoDetailsEditor(TextArea):
         self.add_class("-visible")
         self._set_insert_mode(False)
         self.focus()
+        self._sync_panel_focus_style()
 
     def stop_editing(self, *, save: bool) -> None:
         if not self._editing or self._todo is None:

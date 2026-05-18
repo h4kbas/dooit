@@ -66,14 +66,21 @@ TodosPanel > #todo_details_editor {
     max-height: 12;
     min-height: 0;
     display: none;
-    border: tall $background3;
+    border: $border_type $background3;
     border-title-color: $foreground1;
     border-title-background: $background3;
     background: $background1;
     background-tint: white 0%;
     color: $foreground3;
-    padding: 0 1;
+    padding: 1;
     overflow-y: auto;
+
+    &:focus,
+    &.-panel-focus {
+        border: $border_type $primary;
+        border-title-color: $background1;
+        border-title-background: $primary;
+    }
 
     & .text-area--cursor-line {
         background: $background3;

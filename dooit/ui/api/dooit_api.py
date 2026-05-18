@@ -49,6 +49,11 @@ class DooitAPI:
         self.app.bar_switcher.switch_to_notification(BarNotification(message, level))
 
     async def handle_key(self, key: str) -> None:
+        from dooit.ui.widgets.todo_details_editor import TodoDetailsEditor
+
+        if isinstance(self.app.focused, TodoDetailsEditor):
+            return
+
         keymatch = self.keys.register_key(key)
 
         if keymatch.match_type == KeyMatchType.NoMatchFound:
@@ -73,11 +78,20 @@ class DooitAPI:
 
     @property
     def focused(self) -> ModelTree:
+        from dooit.ui.widgets.todo_details_editor import TodoDetailsEditor
+
         focused = self.app.focused
         if isinstance(focused, ModelTree):
             return focused
 
-        raise ValueError(f"Expected BaseTree, got {type(focused)}")
+        if isinstance(focused, TodoDetailsEditor):
+            panel = focused.parent
+            if panel is not None:
+                tree = panel.query(TodosTree).first()
+                if tree is not None:
+                    return tree
+
+        raise ValueError(f"Expected ModelTree, got {type(focused)}")
 
     def copy_description_to_clipboard(self):
         """Copy the description of the focused item to the clipboard"""
@@ -151,7 +165,7 @@ class DooitAPI:
         from dooit.ui.widgets.todo_details_editor import TodoDetailsEditor
         from dooit.ui.widgets.todos_panel import TodosPanel
 
-        focused = self.focused
+        focused = self.app.focused
         if isinstance(focused, TodoDetailsEditor):
             return
 
