@@ -24,7 +24,7 @@ class TodosPanel(Container):
         if not self.is_mounted:
             return
 
-        tree = self.query(TodosTree).first
+        tree = self.query(TodosTree).first()
         if tree is None:
             return
 
@@ -55,7 +55,7 @@ class TodosPanel(Container):
     @on(TodoDetailsChanged)
     def on_details_changed(self, event: TodoDetailsChanged) -> None:
         event.stop()
-        tree = self.query(TodosTree).first
+        tree = self.query(TodosTree).first()
         if tree is None:
             return
 
